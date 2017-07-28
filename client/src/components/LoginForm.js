@@ -2,7 +2,7 @@ import React from 'react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import superagent from 'superagent';
-import {Redirect} from 'react-router-dom';
+
 
 export default class LoginForm extends React.Component {
 	constructor() {
@@ -24,11 +24,7 @@ export default class LoginForm extends React.Component {
 			password: event.target.value
 		})
 	}
-	isAuthenticated() {
-		const token = localStorage.getItem('token');
-		return token && token.length >10;
-		
-	}
+	
 	submitForm(event) {
 		event.preventDefault();
 		superagent
@@ -43,16 +39,14 @@ export default class LoginForm extends React.Component {
 				}
 				// console.log('res.body: ', res.body.token);
 				localStorage.setItem('token', res.body.token);
-				this.setState();
+				this.props.onSuccessfulLogin();
 			})
 	}
 
 	render() {   
-		const isAuthenticated = this.isAuthenticated();
-		
 		return (
 			<div>
-				{isAuthenticated ? <Redirect to={{pathname: '/app'}} /> : (
+				
 				<form onSubmit={this.submitForm.bind(this)}>
 					<TextField
 						floatingLabelText = "Username"
@@ -67,8 +61,9 @@ export default class LoginForm extends React.Component {
 						type="submit"
 						label="Submit"
 						/>
-				</form>)}
+				</form>
 			</div>
+
 		);
 	}
 }
